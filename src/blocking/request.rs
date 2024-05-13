@@ -538,7 +538,7 @@ impl RequestBuilder {
     /// ```
     #[cfg(feature = "json")]
     #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
-    pub fn json_ser(mut self, json: Vec<u8>) -> RequestBuilder {
+    pub fn json_ser(mut self, body: Vec<u8>) -> RequestBuilder {
         if let Ok(ref mut req) = self.request {
             if !req.headers().contains_key(CONTENT_TYPE) {
                 req.headers_mut()
