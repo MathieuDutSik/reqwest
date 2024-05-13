@@ -217,7 +217,7 @@ impl RequestBuilder {
     #[cfg(feature = "json")]
     #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
     /// Set the request json
-    pub fn json_ser(mut self, json: Vec<u8>) -> RequestBuilder {
+    pub fn json_ser(mut self, body: Vec<u8>) -> RequestBuilder {
         if let Ok(ref mut req) = self.request {
             req.headers_mut()
                 .insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
