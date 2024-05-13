@@ -214,6 +214,18 @@ impl RequestBuilder {
         self
     }
 
+    #[cfg(feature = "json")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
+    /// Set the request json
+    pub fn json_ser(mut self, json: Vec<u8>) -> RequestBuilder {
+        if let Ok(ref mut req) = self.request {
+            req.headers_mut()
+                .insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+            *req.body_mut() = Some(body.into());
+        }
+        self
+    }
+
     /// Enable HTTP basic authentication.
     pub fn basic_auth<U, P>(self, username: U, password: Option<P>) -> RequestBuilder
     where

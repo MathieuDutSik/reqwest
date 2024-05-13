@@ -509,6 +509,46 @@ impl RequestBuilder {
         self
     }
 
+    /// Send a serialized JSON body.
+    ///
+    /// Sets the body to the JSON serialization of the passed value, and
+    /// also sets the `Content-Type: application/json` header.
+    ///
+    /// # Optional
+    ///
+    /// This requires the optional `json` feature enabled.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # use reqwest::Error;
+    /// # use std::collections::HashMap;
+    /// #
+    /// # fn run() -> Result<(), Error> {
+    /// let mut map = HashMap::new();
+    /// map.insert("lang", "rust");
+    /// let body = serde_json::to_vec(&map).unwrap();
+    ///
+    /// let client = reqwest::blocking::Client::new();
+    /// let res = client.post("http://httpbin.org")
+    ///     .json_ser(body)
+    ///     .send()?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[cfg(feature = "json")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
+    pub fn json_ser(mut self, json: Vec<u8>) -> RequestBuilder {
+        if let Ok(ref mut req) = self.request {
+            if !req.headers().contains_key(CONTENT_TYPE) {
+                req.headers_mut()
+                    .insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+            }
+            *req.body_mut() = Some(body.into());
+        }
+        self
+    }
+
     /// Sends a multipart/form-data body.
     ///
     /// ```

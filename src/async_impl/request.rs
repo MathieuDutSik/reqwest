@@ -455,6 +455,24 @@ impl RequestBuilder {
         self
     }
 
+    /// Send an already serialized JSON body
+    ///
+    /// # Optional
+    ///
+    /// This requires the optional `json` feature enabled.
+    #[cfg(feature = "json")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
+    pub fn json_ser(mut self, body: Vec<u8>) -> RequestBuilder {
+        if let Ok(ref mut req) = self.request {
+            if !req.headers().contains_key(CONTENT_TYPE) {
+                req.headers_mut()
+                    .insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+            }
+            *req.body_mut() = Some(body.into());
+        }
+        self
+    }
+
     /// Disable CORS on fetching the request.
     ///
     /// # WASM
